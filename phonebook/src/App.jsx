@@ -1,25 +1,29 @@
 import { useState } from 'react'
 
 // Person
-// Returns person's name
+// Returns person's name & number
 const Person = ({ person }) => {
   return(
-    <p>{person.name}</p>
+    <p>{person.name} {person.number}</p>
   )
 }
 
 // Main app
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas',
+      number: '040-1234567'}
   ]) 
+
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   // Add new person
   const addPerson = (event) => {
         event.preventDefault()    
         const personObject = {
           name: newName,
+          number: newNumber,
           id: persons.length + 1,
         }
         // Checking if there is same person
@@ -34,6 +38,7 @@ const App = () => {
         else {
           setPersons(persons.concat(personObject))
           setNewName('')
+          setNewNumber('')
         }
   }
 
@@ -41,16 +46,16 @@ const App = () => {
     setNewName(event.target.value)
   }
 
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
-        <div>
-          name: <input 
-          value={newName}
-          onChange={handlePersonChange}
-          />
-        </div>
+        <div>name: <input value={newName} onChange={handlePersonChange}/></div>
+        <div>number: <input value={newNumber} onChange={handleNumberChange} /></div>
         <div>
             <button type="submit">add</button>
         </div>
