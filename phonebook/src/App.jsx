@@ -22,13 +22,22 @@ const App = () => {
           name: newName,
           id: persons.length + 1,
         }
-        //console.log('button clicked', event.target)  
-        setPersons(persons.concat(personObject))
-        setNewName('')
+        // Checking if there is same person
+        // "Checks whole thing if there is one instance of it returns true"
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+        if (persons.some(person => person.name === newName)) {
+          // Alerting user of duplicate
+          // Pops up and alerting window with text
+          // https://developer.mozilla.org/en-US/docs/Web/API/Window/alert
+          window.alert(`${newName} is already added to phonebook`)
+        }
+        else {
+          setPersons(persons.concat(personObject))
+          setNewName('')
+        }
   }
 
   const handlePersonChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
