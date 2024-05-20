@@ -1,21 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 // importing components
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Persons from './components/Persons'
+// importing services
+import personService from './services/persons'
 
 // Main app
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+        })
+      }, [])
 
   // Add new person
   const addPerson = (event) => {
@@ -26,18 +32,17 @@ const App = () => {
           id: persons.length + 1,
         }
         // Checking if there is same person
-        // "Checks whole thing if there is one instance of it returns true"
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
-        if (persons.some(person => person.name === newName)) {
-          // Alerting user of duplicate
-          // Pops up and alerting window with text
-          // https://developer.mozilla.org/en-US/docs/Web/API/Window/alert
-          window.alert(`${newName} is already added to phonebook`)
+        if (!persons.filter(p => p.name === newName).length) {
+          personService
+            .create(personObject)
+            .then(returnedPerson => {
+              setPersons(persons.concat(returnedPerson))
+              setNewName('')
+              setNewNumber('')
+            })
         }
         else {
-          setPersons(persons.concat(personObject))
-          setNewName('')
-          setNewNumber('')
+          alert(`${newName} is already added to phonebook`);
         }
   }
 
