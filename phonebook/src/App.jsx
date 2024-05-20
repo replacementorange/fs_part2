@@ -1,12 +1,8 @@
 import { useState } from 'react'
-
-// Person
-// Returns person's name & number
-const Person = ({ person }) => {
-  return(
-    <p>{person.name} {person.number}</p>
-  )
-}
+// importing components
+import Filter from './components/Filter'
+import Form from './components/Form'
+import Persons from './components/Persons'
 
 // Main app
 const App = () => {
@@ -57,25 +53,31 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const displayPerson = newFilter ? persons.filter(person => person.name.toLowerCase().search(newFilter.toLowerCase()) !== -1) : persons
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with<input value={newFilter} onChange={handleFilterChange} /></div>
+      
+      <Filter
+        setNewFilter={setNewFilter}
+        handleFilterChange={handleFilterChange}
+      />
+
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>name: <input value={newName} onChange={handlePersonChange}/></div>
-        <div>number: <input value={newNumber} onChange={handleNumberChange} /></div>
-        <div>
-            <button type="submit">add</button>
-        </div>
-      </form>
+
+      <Form
+        addPerson = {addPerson}
+        newName = {newName}
+        handlePersonChange = {handlePersonChange}
+        newNumber = {newNumber}
+        handleNumberChange = {handleNumberChange}
+      />
+
       <h2>Numbers</h2>
-      <div>
-        {persons.filter(char => char.name.toLowerCase() // filters name with chars trough filet
-        .includes(newFilter.toLocaleLowerCase()))
-        .map(person => <Person key={person.name} person={person}/> // map filtered names & show them 
-        )}
-      </div>
+
+      <Persons displayPerson={displayPerson}/>
+
     </div>
   )
 }
