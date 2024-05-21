@@ -60,6 +60,15 @@ const App = () => {
 
   const displayPerson = newFilter ? persons.filter(person => person.name.toLowerCase().search(newFilter.toLowerCase()) !== -1) : persons
 
+  // Delete person
+  const deletePerson = (id) => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+    if (window.confirm(`Delete ${persons.filter(p => p.id === id)[0].name}?`)) {
+      personService.axiosDelete(id)
+      personService.getAll().then(initialPersons => {setPersons(initialPersons)})
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -81,7 +90,8 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons displayPerson={displayPerson}/>
+      <Persons displayPerson={displayPerson}
+               deletePerson={deletePerson}/>
 
     </div>
   )
