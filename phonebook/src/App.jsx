@@ -4,8 +4,11 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 // importing services
 import personService from './services/persons'
+// css file
+import './index.css'
 
 // Main app
 const App = () => {
@@ -14,11 +17,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
-    personService
-      .getAll()
-      .then(initialPersons => {
+    personService.getAll().then(initialPersons => {
         setPersons(initialPersons)
         })
       }, [])
@@ -40,10 +42,20 @@ const App = () => {
               setNewName('')
               setNewNumber('')
             })
+        addedPersonNotification(newName)
         }
         else {
           alert(`${newName} is already added to phonebook`);
         }
+  }
+
+  // Person added notification
+  const addedPersonNotification = (name) => {
+    setErrorMessage(`Added ${name}`
+    )
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
   }
 
   const handlePersonChange = (event) => {
@@ -63,7 +75,7 @@ const App = () => {
   // Delete person
   const deletePerson = (id) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
-    if (window.confirm(`Delete ${persons.filter(p => p.id === id)[0].name}?`)) {
+    if (window.confirm(`Delete ${persons.filter(person => person.id === id)[0].name}?`)) {
       personService.axiosDelete(id)
       personService.getAll().then(initialPersons => {setPersons(initialPersons)})
     }
@@ -73,6 +85,8 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       
+            <Notification message={errorMessage} />
+
       <Filter
         setNewFilter={setNewFilter}
         handleFilterChange={handleFilterChange}
